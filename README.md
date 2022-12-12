@@ -1,7 +1,7 @@
-# pre-commit-hook
+# Pre-commit-hook
 The pre-commit hook is run first before you even type in a commit message. It's used to inspect the snapshot that's about to be committed, to see if you've forgotten something, to make sure tests run, or to examine whatever you need to inspect in the code.
 
-Features
+## Features
 
 Using git pre-commit hooks in your software delivery pipeline helps achieve better quality software with faster time to market
 
@@ -10,51 +10,37 @@ Developers have more access to define additional aspects around the infrastructu
 Implementing git pre-commit hooks is essentially executing local scripts to check for certain quality and policy items prior to pushing the commit
 
 # Prerequisites:
-terraform
+### Terraform
 
-terraform installtion Ubuntu/Debian
-
-
-sudo apt-get update && sudo apt-get install -y gnupg software-properties-common
- 
+#### Terraform installtion Ubuntu/Debian
 
 ```
+sudo apt-get update && sudo apt-get install -y gnupg software-properties-common
+
 wget -O- https://apt.releases.hashicorp.com/gpg | \
     gpg --dearmor | \
     sudo tee /usr/share/keyrings/hashicorp-archive-keyring.gpg
- 
-
 
 gpg --no-default-keyring \
     --keyring /usr/share/keyrings/hashicorp-archive-keyring.gpg \
     --fingerprint
- 
-
 
 echo "deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] \
     https://apt.releases.hashicorp.com $(lsb_release -cs) main" | \
     sudo tee /etc/apt/sources.list.d/hashicorp.list
+
+sudo apt update
+
+sudo apt-get install terraform
+
+### verify the installation
+terraform -help
 ```
 
 
+#### Terraform installation macos
 
- 
-
-
-sudo apt update
- 
-
-
-sudo apt-get install terraform
-verify the installation
-
-
-terraform -help
- 
-
-Terraform installation macos
-
-
+```
 brew tap hashicorp/tap
 
 brew install hashicorp/tap/terraform
@@ -62,37 +48,37 @@ brew install hashicorp/tap/terraform
 brew update
 
 brew upgrade hashicorp/tap/terraform
-Verify the installation
 
-
+###Verify the installation
 terraform -help
- 
+```
 
-install git
+### Git
+
+Install git
 
 Install dependencies
 
-```
-pre-commit, terraform, git, POSIX compatible shell, Internet connection (on first run), x86_64 compatible operation system, Some hardware where this OS will run, Electricity for hardware and internet connection, Some basic physical laws, Hope that it all will work.
-checkov required for checkov hook.
-terraform-docs required for terraform_docs hook.
-terragrunt required for terragrunt_validate hook.
-terrascan required for terrascan hook.
-TFLint required for terraform_tflint hook.
-TFSec required for terraform_tfsec hook.
-infracost required for infracost_breakdown hook.
-jq required for infracost_breakdown hook.
-tfupdate required for tfupdate hook.
-hcledit required for terraform_wrapper_module_for_each hook.
-```
+- pre-commit, terraform, git, POSIX compatible shell, Internet connection (on first run), x86_64 compatible operation system, Some hardware where this OS will run, Electricity for hardware and internet connection, Some basic physical laws, Hope that it all will work.
+- checkov required for checkov hook.
+- terraform-docs required for terraform_docs hook.
+- terragrunt required for terragrunt_validate hook.
+- terrascan required for terrascan hook.
+- TFLint required for terraform_tflint hook.
+- TFSec required for terraform_tfsec hook.
+- infracost required for infracost_breakdown hook.
+- jq required for infracost_breakdown hook.
+- tfupdate required for tfupdate hook.
+- hcledit required for terraform_wrapper_module_for_each hook.
 
-# Install on macOS
+
+### Install on macOS
 
 ```
 brew install pre-commit terraform-docs tflint tfsec checkov terrascan infracost tfupdate minamijoyo/hcledit/hcledit jq
 ```
 
-# Install on Ubuntu 20.04
+### Install on Ubuntu 20.04
 
 ```
 sudo apt update
@@ -108,27 +94,30 @@ sudo apt install -y jq && \
 curl -L "$(curl -s https://api.github.com/repos/infracost/infracost/releases/latest | grep -o -E -m 1 "https://.+?-linux-amd64.tar.gz")" > infracost.tgz && tar -xzf infracost.tgz && rm infracost.tgz && sudo mv infracost-linux-amd64 /usr/bin/infracost && infracost register
 curl -L "$(curl -s https://api.github.com/repos/minamijoyo/tfupdate/releases/latest | grep -o -E -m 1 "https://.+?_linux_amd64.tar.gz")" > tfupdate.tar.gz && tar -xzf tfupdate.tar.gz tfupdate && rm tfupdate.tar.gz && sudo mv tfupdate /usr/bin/
 curl -L "$(curl -s https://api.github.com/repos/minamijoyo/hcledit/releases/latest | grep -o -E -m 1 "https://.+?_linux_amd64.tar.gz")" > hcledit.tar.gz && tar -xzf hcledit.tar.gz hcledit && rm hcledit.tar.gz && sudo mv hcledit /usr/bin/
-``` 
+```
 
-# Initialize git
+### Initialize git
+
 You need to initialize git on the working directory before applying any pre-commit hook
 
-
+```
 git init
 initialized Git repository in /Users/firojmohammad/terraform/terraform-ubuntu/.git/
-Install pre-commit before git commit
 
+```
 
+### Install pre-commit before git commit
 
+```
 pre-commit install
 pre-commit installed at .git/hooks/pre-commit
-you can check at .git/hooks/pre-commit 
+```
+We  can check at .git/hooks/pre-commit 
 
 Here are all your hooks 
+```
+cat .git/hooks/pre-commit
 
-
-# cat .git/hooks/pre-commit
- ```
 #!/usr/bin/env bash
 # File generated by pre-commit: https://pre-commit.com
 # ID: 138fd403232d2ddd5efb44317e38bf03
@@ -150,9 +139,8 @@ else
     exit 1
 fi
 ```
- 
 
-# Create config file .pre-commit-config.yaml
+### Create config file .pre-commit-config.yaml
 You can write a pre-commit hook config file according to the depth of the code, script language, etc. This one is for the terraform code.
 
 
@@ -171,37 +159,19 @@ You can write a pre-commit hook config file according to the depth of the code, 
     - id: check-yaml
     - id: check-added-large-files
     - id: trailing-whitespace
- 
 
-Then we verify the code and it must be as shown in 
-
-```
-ls -la
-total 56
-drwxr-xr-x  11 firojmohammad  staff   352 Nov 23 16:59 .
-drwxr-xr-x   5 firojmohammad  staff   160 Sep 26 15:32 ..
-drwxr-xr-x   7 firojmohammad  staff   224 Nov 23 16:59 .git
--rw-r--r--   1 firojmohammad  staff   492 Nov 23 13:16 .pre-commit-config.yaml
-drwxr-xr-x   4 firojmohammad  staff   128 Nov 21 11:14 .terraform
--rw-r--r--   1 firojmohammad  staff  1239 Nov 21 16:43 .terraform.lock.hcl
--rw-r--r--   1 firojmohammad  staff   138 Sep 26 15:32 backend.tf
--rw-r--r--   1 firojmohammad  staff   569 Nov 23 14:38 main.tf
--rw-r--r--   1 firojmohammad  staff   629 Sep 26 15:32 output.tf
--rw-r--r--   1 firojmohammad  staff    92 Nov 21 16:43 provider.tf
--rw-r--r--   1 firojmohammad  staff  1023 Nov 21 16:43 variable.tf
-```
-Whenever you change anything in your terraform code just do git add and git commit but whenever you do git commit the pre-commit hook must scan all the code in your repo
+Whenever we change anything in your terraform code just do git add and git commit but whenever we do git commit the pre-commit hook must scan all the code in your repo
 
 ```
 git add .
 git commit -m "added something"
 ```
-after that, you can check it by running the command git commit -m "added something" just after git add .
+
+After that, we can check it by running the command git commit -m "added something" just after git add .
 
 ```
 git commit -m "added something"
 ```
-
 ```
 Terraform validate with tflint...........................................Failed
 - hook id: terraform_tflint
